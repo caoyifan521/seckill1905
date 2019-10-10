@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/goods.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+<div class="seckill_content">
+    <div class="title"><h2>秒杀商品列表</h2></div>
+    <div class="all_seckill_goods">
+                <div class="seckill_goods" th:each="seckill,seckillStat : ${seckillList}">
+            <h4 th:text="${seckill.goods.goodsName}"></h4>
+            <img th:src="@{'/' + ${seckill.goods.goodsImg}}" width="250"/>
+            <br/><br/>
+            <div class="seckill_price">
+                <!--<p th:text="${goods.goodsTitle}"></p>-->
+                <p>
+                    <span class="price" th:text="${seckill.seckillPrice}+'元  '"></span>
+                    <del><span class="seckillPrice" th:text="${seckill.goods.goodsPrice}+'元'"></span></del>
+                </p>
+                <a th:href="@{'/' + ${seckill.seckillUrl}}">
+<!--                <a th:href="@{'/seckill/detail?sid=' + ${seckill.seckillId}}">-->
+                    <button class="btn btn-default" type="submit">详情</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

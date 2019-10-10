@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>商品详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/detail.css}"/>
+
+</head>
+<body>
+
+
+<div class="goods">
+    <div class="containers">
+        <div class="goods_view">
+            <img th:src="@{'/' + ${seckillInfo.seckill.goods.goodsImg}}" width="560"/>
+        </div>
+        <div class="goods_info">
+            <div style="overflow: hidden;">
+                <h2 th:text="${seckillInfo.seckill.goods.goodsName}" style="line-height: 48px;float: left;"></h2>
+                <div class="seckill_data" style="float: right;line-height: 48px;font-weight: bold">
+                    <!--<span>秒杀开始时间</span>-<span>秒杀结束时间</span><br />-->
+                    <span th:text="${#dates.format(seckillInfo.seckill.beginTime, 'yyyy-MM-dd HH:mm:ss')}"></span>---
+                    <span th:text="${#dates.format(seckillInfo.seckill.endTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                </div>
+            </div>
+            <!--<p class="title" th:text="${goods.goods.goodsTitle}"></p>-->
+            <div style="height: 38px;background-color: lightblue">
+                <div style="float: left;height: 38px;font-size: 16px;line-height: 38px;">
+                    <span class="price1" th:text="${seckillInfo.seckill.seckillPrice}+'元  '"></span>
+                    <del><span class="price2" th:text="${seckillInfo.seckill.goods.goodsPrice}+'元'"></span></del>
+
+                </div>
+                <div class="seckillStatus" style="float: right;">
+                    <input type="hidden" id="remainSeconds" th:value="${seckillInfo.remainTime}" />
+                    <span th:if="${seckillInfo.seckillState eq -1}">秒杀倒计时：<span id="countDown"
+                                                                                th:text="${seckillInfo.remainTime}"></span>秒</span>
+                    <span th:if="${seckillInfo.seckillState eq 0}">秒杀进行中</span>
+                    <span th:if="${seckillInfo.seckillState eq 1}">秒杀已结束</span>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="count">
+                <span>库存：</span>
+                <span id="seckillStock" th:text="${seckillInfo.seckill.seckillStock}"></span>
+            </div>
+
+            <form id="miaoshaForm" method="post" th:action="@{/seckill/buy}">
+                <button class="btn btn-primary" type="submit" id="buyButton">立即抢购</button>
+                <input type="hidden" name="sid" th:value="${seckillInfo.seckill.seckillId}"/>
+                <input type="hidden" name="info" value="" id="info"/>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script>
+    $(function () {
+        countDown();
+    });
+
+    function countDown() {
+        var remainSeconds = $("#remainSeconds").val();
+        var timeout;
+        if (remainSeconds > 0) {//秒杀还没开始，倒计时
+            $("#buyButton").attr("disabled", true);
+            timeout = setTimeout(function () {
+                $("#countDown").text(remainSeconds - 1);
+                $("#remainSeconds").val(remainSeconds - 1);
+                countDown();
+            }, 1000);
+        } else if (remainSeconds == 0) {//秒杀进行中
+            $("#buyButton").attr("disabled", false);
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            // 获取接口
+            $("#miaoshaTip").html("秒杀进行中");
+        } else {//秒杀已经结束
+            $("#buyButton").attr("disabled", true);
+            $("#miaoshaTip").html("秒杀已经结束");
+        }
+    }
+
+</script>
+</html>
